@@ -1,0 +1,24 @@
+#!/bin/sh
+
+set -e
+
+# Create the feeds.dat if necessary
+if ! r2e list >/dev/null 2>&1; then
+	r2e new
+fi
+
+# Don't want to add the feed if it already exists
+if r2e list | grep -qF "$1 ($2)"; then
+	echo "ERROR: Feed already exists" >&2
+	exit 1
+fi
+
+r2e add "$1" "$2"
+
+# Flush the existing posts
+
+# First we need to know which feed we are
+feed_id="$(r2e list | grep -F "$1 ($2)" | cut -d : -f 1)"
+
+# And now we can run just *that* feed, without sending e-mail
+r2e run --no-send $feed_id

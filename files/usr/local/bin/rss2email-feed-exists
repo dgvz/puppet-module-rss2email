@@ -1,0 +1,5 @@
+#!/bin/sh
+
+set -e
+
+r2e list | grep -q -F "$1 ($2)"
